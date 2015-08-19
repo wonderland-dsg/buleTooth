@@ -1,0 +1,230 @@
+C51 COMPILER V9.53.0.0   MAIN                                                              08/18/2015 12:44:24 PAGE 1   
+
+
+C51 COMPILER V9.53.0.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND TABS(2)
+
+line level    source
+
+   1          
+   2          #include <mpu.h>
+   3          #include <visualScope.h>
+   4          sbit p11=P1^1;
+   5          sbit p10=P1^0;
+   6          sbit p12=P1^2;
+   7          sbit p13=P1^3;
+   8          sbit p14=P1^4;
+   9          sbit p15=P1^5;
+  10          sbit p16=P1^6;
+  11          sbit p17=P1^7;
+  12          bit  flag_REC=0; 
+  13          bit  flag=0;  
+  14          
+  15          double a[3],w[3],Angle[3],T;
+  16          
+  17          unsigned char str[] ="test code!";
+  18          char code str1[] = "收到指令，向后!\n";
+  19          char code str2[] = "收到指令，向左!\n";
+  20          char code str3[] = "收到指令，向右!\n";
+  21          char code str4[] = "收到指令，停止!\n";
+  22          unsigned char check[3]={0xAA,0xAB,0xAC};
+  23          
+  24          typedef unsigned char  uchar;
+  25          typedef unsigned short ushort;
+  26          typedef unsigned int   uint;
+  27          uchar  i=0;
+  28          uchar  dat=0;
+  29          uchar  buff[5]=0;
+  30          sbit    SCL=P2^0;     //IIC
+  31          sbit    SDA=P2^1;     //IIC
+  32          
+  33          void init_uart(void);
+  34          void send_str(char code str_[]);
+*** WARNING C258 IN LINE 34 OF main.c: 'str_': mspace on parameter ignored
+  35          void send_massage();
+  36          void DecodeIMUData(unsigned char chrTemp[]);
+  37          void send_double(double a);
+  38          void send_doubleStr(double a[]);
+  39          
+  40          int main(){
+  41   1        init_uart();
+  42   1        mpu_init();
+  43   1        send_str("init success!\n");
+  44   1        while(1){
+  45   2      //    int Gx,Gy,Gz,t;
+  46   2      //    Gx=(int)mpu_read_byte(GYRO_XOUT_H)<<8|(int)mpu_read_byte(GYRO_XOUT_L);
+  47   2      //    Gy=(int)mpu_read_byte(GYRO_YOUT_H)<<8|(int)mpu_read_byte(GYRO_YOUT_L);
+  48   2      //    Gz=(int)mpu_read_byte(GYRO_ZOUT_H)<<8|(int)mpu_read_byte(GYRO_ZOUT_L);
+  49   2      //    t=(int)mpu_read_byte(TEMP_OUT_H)<<8|(int)mpu_read_byte(TEMP_OUT_L);
+  50   2      //    if(Gx>32768){
+  51   2      //      Gx=65535-Gx;
+  52   2      //    }
+  53   2      //    if(Gx<32768){
+  54   2      //      Gx=-Gx;
+C51 COMPILER V9.53.0.0   MAIN                                                              08/18/2015 12:44:24 PAGE 2   
+
+  55   2      //    }
+  56   2      //    if(Gy>32768){
+  57   2      //      Gy=65535-Gy;
+  58   2      //    }
+  59   2      //    if(Gy<32768){
+  60   2      //      Gy=-Gy;
+  61   2      //    }
+  62   2      //    if(Gx>32768){
+  63   2      //      Gz=65535-Gz;
+  64   2      //    }
+  65   2      //    if(Gz<32768){
+  66   2      //      Gz=-Gz;
+  67   2      //    }
+  68   2      //    VisualScope(t,Gx,Gy,Gz);
+  69   2          unsigned char temp=0,i,j;
+  70   2          for(i=0;i<3;i++){
+  71   3            SBUF=check[i];
+  72   3            while(!TI);
+  73   3            TI=0;
+  74   3          }
+  75   2          //send_str("read again!!!\n");
+  76   2      //    SBUF=0xAA;
+  77   2      //    while(!TI);
+  78   2      //    TI=0;
+  79   2          for(i=0;i<14;i++){
+  80   3            j=ACCEL_XOUT_H+i;
+  81   3            temp|=SBUF=mpu_read_byte(j);
+  82   3            while(!TI);
+  83   3            TI = 0;
+  84   3           }
+  85   2          SBUF=temp;
+  86   2          while(!TI);
+  87   2            TI = 0;
+  88   2          //send_massage();
+  89   2        }
+  90   1        return 0;
+  91   1      }
+  92          
+  93          
+  94          
+  95          void init_uart(void){
+  96   1        TMOD=0x20;
+  97   1        TH1=0xfd;  //9600
+  98   1        TL1=0xfd;
+  99   1        SCON=0x50;
+ 100   1        TR1=1;
+ 101   1        ES=1;
+ 102   1        EA=1;
+ 103   1      }
+ 104          void isr_uart(void) interrupt 4{
+ 105   1      //  if(RI){                  //是否接收中断
+ 106   1      //    RI=0;
+ 107   1      //    dat=SBUF;
+ 108   1      //    if(dat=='O'&&(i==0)) //接收数据第一帧
+ 109   1      //      {
+ 110   1      //        buff[i]=dat;
+ 111   1      //        flag=1;        //开始接收数据
+ 112   1      //      }
+ 113   1      //      else
+ 114   1      //      if(flag==1)
+ 115   1      //     {
+ 116   1      //       i++;
+C51 COMPILER V9.53.0.0   MAIN                                                              08/18/2015 12:44:24 PAGE 3   
+
+ 117   1      //       buff[i]=dat;
+ 118   1      //       if(i>=2){
+ 119   1      //        i=0;
+ 120   1      //        flag=0;
+ 121   1      //        flag_REC=1;
+ 122   1      //       }  // 停止接收
+ 123   1      //     }
+ 124   1      //   }
+ 125   1      }
+ 126           void send_massage(){
+ 127   1         unsigned char temp[11],i;
+ 128   1         temp[1]=0x51;
+ 129   1         for(i=2;i<10;i++){
+ 130   2             temp[i]=mpu_read_byte(ACCEL_XOUT_H+i-2);
+ 131   2           }
+ 132   1         DecodeIMUData(temp);
+ 133   1         send_doubleStr(a);
+ 134   1         //send_doubleStr(w);
+ 135   1         //send_doubleStr(Angle);
+ 136   1         //send_double(T);
+ 137   1       }
+ 138           
+ 139            void send_double(double d){
+ 140   1          unsigned long a=d;
+ 141   1          unsigned char b;
+ 142   1          char t=4;
+ 143   1          while(t>0) {
+ 144   2            t--;
+ 145   2            b=a&0x000000ff;
+ 146   2            SBUF = b;
+ 147   2            while(!TI);       // 等特数据传送
+ 148   2              TI = 0;         // 清除数据传送标志
+ 149   2            a>>8;
+*** WARNING C275 IN LINE 149 OF main.c: expression with possibly no effect
+ 150   2           }  
+ 151   1        }
+ 152            
+ 153            void send_doubleStr(double a[]){
+ 154   1          int i;
+ 155   1          SBUF=0xAA;        //开始标志位
+ 156   1          while(!TI);       // 等特数据传送
+ 157   1              TI = 0;         // 清除数据传送标志
+ 158   1          for(i=0;i<3;i++){
+ 159   2            send_double(a[i]);
+ 160   2          }
+ 161   1        }
+ 162            
+ 163            
+ 164              /*while(1){
+ 165              if(flag_REC==1){
+ 166                if(buff[0]=='O'&&buff[1]=='N')  //第一个字节为O，第二个字节为N，第三个字节为控制码
+ 167                switch(buff[2]){
+ 168                  case 'C':
+ 169                    P1=0xFF;
+ 170                    p12=0;
+ 171                    p16=1;
+ 172                    send_str(str2);
+ 173                    break;
+ 174                  case 'A':
+ 175                    P1=0xFF;
+ 176                    p10=0;
+ 177                    p14=1;
+C51 COMPILER V9.53.0.0   MAIN                                                              08/18/2015 12:44:24 PAGE 4   
+
+ 178                    send_str(str);
+ 179                    break;
+ 180                  case 'D':
+ 181                    P1=0xFF;
+ 182                    p13=0;
+ 183                    p17=1;
+ 184                    send_str(str3);
+ 185                    break;
+ 186                  case 'B':
+ 187                    P1=0xFF;
+ 188                    p11=0;
+ 189                    p15=1;
+ 190                    send_str(str1);
+ 191                    break;
+ 192                  case 'F':
+ 193                    P1=0x00;
+ 194                    send_str(str4);
+ 195                    break;
+ 196                  }
+ 197              }
+ 198            }*/
+*** WARNING C294 IN LINE 90 OF main.c: unreachable code
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    253    ----
+   CONSTANT SIZE    =     83    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     61      24
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      2    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  3 WARNING(S),  0 ERROR(S)

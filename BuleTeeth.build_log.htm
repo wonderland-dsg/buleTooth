@@ -1,0 +1,91 @@
+<html>
+<body>
+<pre>
+<h1>礦ision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: μVision V5.11.2.0
+Copyright (C) 2014 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: dang 四川大学, 四川大学, LIC=EXTEV-PTTN5-MV11R-KBE75-PT15Z-2Q3W2
+ 
+Tool Versions:
+Toolchain:       PK51 Prof. Developers Kit  Version: 9.53.0.0
+Toolchain Path:  C:\Keil_v5\C51\BIN
+C Compiler:      C51.exe V9.53.0.0
+Assembler:       A51.exe V8.02b
+Linker/Locator:  BL51.exe V6.22
+Library Manager: LIB51.exe V4.30.0.2
+Hex Converter:   OH51.exe V2.7.0.0
+CPU DLL:         S8051.DLL V3.95.0.0
+Dialog DLL:      DP51.DLL V2.62.0.1 
+<h2>Project:</h2>
+F:\2015大创项目\BuleTeeth\BuleTeeth.uvproj
+Project File Date:  08/11/2015
+
+<h2>Output:</h2>
+Rebuild target 'Target 1'
+assembling STARTUP.A51...
+compiling main.c...
+main.c(34): warning C258: 'str_': mspace on parameter ignored
+main.c(149): warning C275: expression with possibly no effect
+main.c(90): warning C294: unreachable code
+compiling I2C.c...
+compiling mpu.c...
+compiling visuaScope.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SEND_MASSAGE?MAIN
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_GET_DATA?MPU
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_VISUALSCOPE?VISUASCOPE
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  _DECODEIMUDATA
+    MODULE:  main.obj (MAIN)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  _DECODEIMUDATA
+    MODULE:  main.obj (MAIN)
+    ADDRESS: 038AH
+Program Size: data=126.3 xdata=0 code=1310
+creating hex file from "BuleTeeth"...
+"BuleTeeth" - 0 Error(s), 8 Warning(s).
+275: expression with possibly no effect
+main.c(90): warning C294: unreachable code
+main.c - 0 Error(s), 3 Warning(s).
+fore 'unsigned'
+visuaScope.c - 1 Error(s), 0 Warning(s).
+compiling visuaScope.c...
+visuaScope.c(44): error C202: 'Buffer': undefined identifier
+visuaScope.c(45): error C141: syntax error near 'unsigned'
+visuaScope.c(45): error C202: 'Temp': undefined identifier
+visuaScope.c(47): error C202: 'Buffer': undefined identifier
+visuaScope.c(48): error C202: 'Buffer': undefined identifier
+visuaScope.c(49): error C202: 'Buffer': undefined identifier
+visuaScope.c(50): error C202: 'Buffer': undefined identifier
+visuaScope.c(51): error C202: 'Buffer': undefined identifier
+visuaScope.c(52): error C202: 'Buffer': undefined identifier
+visuaScope.c(53): error C202: 'Buffer': undefined identifier
+visuaScope.c(54): error C202: 'Buffer': undefined identifier
+visuaScope.c(57): error C202: 'Temp': undefined identifier
+visuaScope.c(58): error C202: 'Buffer': undefined identifier
+visuaScope.c(59): error C202: 'Buffer': undefined identifier
+visuaScope.c(62): error C202: 'SBUF': undefined identifier
+visuaScope.c(63): error C202: 'TI': undefined identifier
+visuaScope.c(64): error C202: 'TI': undefined identifier
+visuaScope.c - 17 Error(s), 0 Warning(s).
+compiling visuaScope.c...
+visuaScope.c(62): error C202: 'SBUF': undefined identifier
+visuaScope.c(63): error C202: 'TI': undefined identifier
+visuaScope.c(64): error C202: 'TI': undefined identifier
+visuaScope.c - 3 Error(s), 0 Warning(s).
+compiling visuaScope.c...
+visuaScope.c - 0 Error(s), 0 Warning(s).
+compiling main.c...
+main.c(34): warning C258: 'str_': mspace on parameter ignored
+main.c(143): warning C275: expression with possibly no effect
+main.c(66): warning C294: unreachable code
+main.c - 0 Error(s), 3 Warning(s).
+compiling main.c...
+main.c(34): warning C258: 'str_': mspace on parameter ignored
+main.c(147): warning C275: expression with possibly no effect
+main.c(70): warning C294: unreachable code
+main.c - 0 Error(s), 3 Warning(s).

@@ -1,0 +1,7 @@
+"STARTUP.obj",
+"main.obj",
+"I2C.obj",
+"mpu.obj",
+"visuaScope.obj" 
+TO "BuleTeeth" 
+RAMSIZE(256) 

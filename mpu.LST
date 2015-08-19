@@ -1,0 +1,76 @@
+C51 COMPILER V9.53.0.0   MPU                                                               08/18/2015 12:44:24 PAGE 1   
+
+
+C51 COMPILER V9.53.0.0, COMPILATION OF MODULE MPU
+OBJECT MODULE PLACED IN mpu.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE mpu.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND TABS(2)
+
+line level    source
+
+   1          #include <mpu.h>
+   2          
+   3          void send_str(unsigned char str_[]){ // 传送字串
+   4   1            unsigned char ii = 0;
+   5   1            while(str_[ii] != '\0') {
+   6   2              SBUF = str_[ii];
+   7   2              while(!TI);       // 等特数据传送
+   8   2              TI = 0;         // 清除数据传送标志
+   9   2              ii++;         // 下一个字符
+  10   2           }  
+  11   1       }
+  12          
+  13          void mpu_write_byte(unsigned char addr,unsigned char dat){
+  14   1        i2c_start();
+  15   1        if(i2c_send_byte(SlaveAddress)){ //Address for mpu6050
+  16   2          send_str("i2c_send_byte(SlaveAddress) success!");
+  17   2        }  
+  18   1        i2c_send_byte(addr);  //Address for register
+  19   1        i2c_send_byte(dat);   //write data to rigister
+  20   1        i2c_stop();
+  21   1      }
+  22          unsigned char mpu_read_byte(unsigned char addr){
+  23   1        unsigned char dat;
+  24   1        i2c_start();
+  25   1        i2c_send_byte(SlaveAddress);  //Address for mpu6050
+  26   1        i2c_send_byte(addr);  //Address for register
+  27   1        i2c_start();
+  28   1        i2c_send_byte(SlaveAddress+1);  //Address for mpu6050
+  29   1        dat=i2c_recv_byte();
+  30   1        i2c_ack();
+  31   1        i2c_stop();
+  32   1        return dat;
+  33   1      }
+  34          void mpu_init(){
+  35   1        int i,j;
+  36   1        for(i=0;i<1000;i++){
+  37   2          for(j=0;j<1000;j++)
+  38   2          _nop_();
+  39   2        }
+  40   1        mpu_write_byte(PWR_MGMT_1, 0x00); 
+  41   1        mpu_write_byte(SMPLRT_DIV, 0x07);
+  42   1        mpu_write_byte(CONFIG, 0x06);
+  43   1        mpu_write_byte(GYRO_CONFIG, 0x08);  //不自检，量程+-500
+  44   1        mpu_write_byte(ACCEL_CONFIG, 0x00);   //不自检，量程+-2g
+  45   1      }
+  46          int get_data(unsigned char addr){
+  47   1        unsigned char h,l;
+  48   1        h=mpu_read_byte(addr);
+  49   1        l=mpu_read_byte(addr+1);
+  50   1        return (h<<8)+l;
+  51   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    200    ----
+C51 COMPILER V9.53.0.0   MPU                                                               08/18/2015 12:44:24 PAGE 2   
+
+   CONSTANT SIZE    =     37    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       9
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
